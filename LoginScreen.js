@@ -20,22 +20,24 @@ export default class LoginScreen extends Component {
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      isLoading: false
     };
   }
 
   handleSignIn = () => {
+    this.setState({isLoading: true});
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
 
-    .then(function (result) {
-      Alert.alert("Sign in successfully")
+    .then((result) => {
+      this.props.navigation.navigate('AccountDetails', {password: this.state.password})
     })
-    .catch(function (error) {
+    .catch(error => {
       console.log(error);
       Alert.alert("Sign in failed")
     })
-    .finally(function () {
-
+    .finally(() => {
+      this.setState({isLoading: false});
     });
   };
 
@@ -62,10 +64,12 @@ export default class LoginScreen extends Component {
           <Button
             onPress={() => navigate('CreateAccount', {})}
             title="Create Account"
+            disabled={this.state.isLoading}
           />
           <Button
             onPress={this.handleSignIn.bind(this)}
             title="Login"
+            disabled={this.state.isLoading}
           />
         </View>
       </View>

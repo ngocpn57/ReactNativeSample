@@ -15,7 +15,8 @@ export default class CreateAccountScreen extends Component {
     this.state = {
       email: "",
       password: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      isLoading: false
     };
   }
 
@@ -25,17 +26,18 @@ export default class CreateAccountScreen extends Component {
       return;
     }
 
+    this.setState({isLoading: true});
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-    .then(function (result) {
+    .then(result => {
       Alert.alert("Successfully created account")
     })
-    .catch(function (error) {
+    .catch(error => {
       console.log(error);
       Alert.alert("Failed to create account")
     })
-    .finally(function () {
-
-    });
+    .finally(() => {
+      this.setState({isLoading: false});
+    })
   };
 
   render() {
@@ -66,6 +68,7 @@ export default class CreateAccountScreen extends Component {
         <Button
           onPress={this.handleCreateAccount.bind(this)}
           title="Create Account"
+          disabled={this.state.isLoading}
         />
       </View>
     );
